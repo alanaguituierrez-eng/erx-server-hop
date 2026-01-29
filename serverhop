@@ -1,0 +1,43 @@
+
+repeat task.wait() until _G and _G.Window and _G.WindUI and _G.Tabs
+
+local Window = _G.Window
+local WindUI = _G.WindUI
+local Tabs = _G.Tabs
+local TeleportService = game:GetService("TeleportService")
+local gamePlaceId = 2534724415  -
+
+
+local function serverHop()
+    local success, err = pcall(function()
+        TeleportService:Teleport(gamePlaceId, game.Players.LocalPlayer)
+    end)
+
+    if not success then
+        WindUI:Notify({
+            Title = "Error",
+            Content = "Idk bruh, say to gg " .. tostring(err),
+            Duration = 5,
+        })
+    else
+        WindUI:Notify({
+            Title = "Server Hop",
+            Content = "changing server ",
+            Duration = 3,
+        })
+    end
+end
+
+Tabs.Main:Button({
+    Title = "Server Hop",
+    Desc = "change server of erlc",
+    Callback = function()
+        serverHop()
+    end,
+})
+
+WindUI:Notify({
+    Title = "Server Hop",
+    Content = "Server Hop was activated sucefully",
+    Duration = 5,
+})
