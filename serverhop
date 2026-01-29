@@ -1,20 +1,39 @@
--- Script externo para Server Hop
+-- Esperar a que todas las variables globales estén definidas
+repeat task.wait() until _G and _G.Window and _G.WindUI and _G.Tabs
+
+local Window = _G.Window
+local WindUI = _G.WindUI
+local Tabs = _G.Tabs
+local TeleportService = game:GetService("TeleportService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
 local gamePlaceId = 2534724415  -- ID del juego Emergency Response: Liberty County
 
+-- Función para hacer Server Hop
 local function serverHop()
-    local TeleportService = game:GetService("TeleportService")
-    local Players = game:GetService("Players")
-    local LocalPlayer = Players.LocalPlayer
+    local success, err = pcall(function()
+        -- Teleportar a un servidor aleatorio del juego
+        TeleportService:Teleport(gamePlaceId, LocalPlayer)
+    end)
 
-    -- Teleportar a un servidor aleatorio del juego
-    TeleportService:Teleport(gamePlaceId, LocalPlayer)
+    if not success then
+        WindUI:Notify({
+            Title = "Error",
+            Content = "No se pudo cambiar de servidor: " .. tostring(err),
+            Duration = 5,
+        })
+    else
+        WindUI:Notify({
+            Title = "Server Hop",
+            Content = "Cambiando de servidor...",
+            Duration = 3,
+        })
+    end
 end
 
--- Añadir botón a la interfaz de WindUI
-if _G and _G.Window and _G.Tabs then
-    local Window = _G.Window
-    local Tabs = _G.Tabs
-
+-- Asegurarse de que la pestaña Main exista
+if Tabs.Main then
+    -- Añadir botón de Server Hop a la pestaña Main
     Tabs.Main:Button({
         Title = "Server Hop",
         Desc = "Cambia a otro servidor de Emergency Response: Liberty County.",
@@ -22,4 +41,13 @@ if _G and _G.Window and _G.Tabs then
             serverHop()
         end,
     })
+else
+    warn("Tabs.Main no está definido. Verifica que el script principal se haya cargado correctamente.")
 end
+
+-- Notificación de carga
+WindUI:Notify({
+    Title = "Server Hop",
+    Content = "El botón de Server Hop se ha añadido correctamente a la pestaña Main.",
+    Duration = 5,
+})
